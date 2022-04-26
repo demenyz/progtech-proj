@@ -1,2 +1,2 @@
-# Programozási Technológiák - Project
-ProgTech beadandó - DZ &amp; BK
+# ProgTech - Project
+> Made by: Demeny Zoltan & Bozso Karoly
