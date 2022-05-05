@@ -71,7 +71,7 @@ public class FormRegister extends JDialog{
             dispose();
         }
         else{
-            JOptionPane.showMessageDialog(this, "An error occured during registration!\nPlease try again!", "Error!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "An error occurred during registration!\nPlease try again!", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -123,14 +123,14 @@ public class FormRegister extends JDialog{
 
     // MAIN -----------------------------
     public static void main(String[] args){
-        FormRegister form = new FormRegister(null);
-        User user = form.user;
+        FormRegister reg = new FormRegister(null);
+        User user = reg.user;
 
         if (user != null){
-            System.out.println("sikeres");
+            System.out.println("Successful registration with the E-mail of: " + user.email);
         }
         else{
-            System.out.println("sikertelen");
+            System.out.println("An error occurred during registration!");
         }
     }
 }
