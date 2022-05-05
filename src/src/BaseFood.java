@@ -6,6 +6,16 @@ public abstract class BaseFood implements Cloneable {
     private double price;
     private double calories;
 
+    public boolean isHot() {
+        return IsHot;
+    }
+
+    public void setHot(boolean hot) {
+        IsHot = hot;
+    }
+
+    private boolean IsHot;
+
     public int getId() {return id;}
     public void setId(int id) {this.id=id;}
 

@@ -1,7 +1,6 @@
 public class Pizza extends BaseFood {
     private String PizzaBase;
     private String Topping;
-    private Boolean ISHot;
 
     public String getPizzaBase() {
         return PizzaBase;
@@ -15,23 +14,15 @@ public class Pizza extends BaseFood {
     public void setTopping(String topping) {
         Topping = topping;
     }
-    public Boolean getISHot() {
-        return ISHot;
-    }
-    public void setISHot(Boolean ISHot) {
-        this.ISHot = ISHot;
-    }
-
     public Pizza() {
     }
 
 
     @Override
     public String toString() {
-        return String.format("Pizza - %s; PizzaBase: %d; Toppings: %t; IsHot: %h;",
+        return String.format("Pizza - %s; PizzaBase: %d; Toppings: %t;",
                 super.toString(),
                 PizzaBase,
-                Topping,
-                ISHot);
+                Topping);
     }
 }
