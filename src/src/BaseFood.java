@@ -1,4 +1,4 @@
-public class BaseFood implements Cloneable {
+public abstract class BaseFood implements Cloneable {
     private static int ID = 1;
 
     public BaseFood() { setId(BaseFood.ID++) ;}
