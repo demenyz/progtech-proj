@@ -1,9 +1,7 @@
 public class Pizza implements BaseFood {
 
-   /* @Override
     public String toString() {
-        return String.format("Pizza - %s; PizzaBase: %d; Toppings: %t;",
-                super.toString()}*/
+        return String.format("Pizza type:");}
 
     @Override
     public int Price() {
@@ -19,4 +17,5 @@ public class Pizza implements BaseFood {
     public boolean Ishot() {
         return false;
     }
+
 }

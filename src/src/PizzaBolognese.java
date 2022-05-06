@@ -18,4 +18,11 @@ public class PizzaBolognese extends FoodDecorator {
     public boolean Ishot() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s; Bolognese Toppings: bolognese, cheese, hot peppers Calories: %i; Price: %i; Hot: %b;",
+        super.toString(), Calories(), Price(), Ishot()
+        );
+    }
 }

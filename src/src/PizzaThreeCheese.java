@@ -4,7 +4,6 @@ public class PizzaThreeCheese extends FoodDecorator {
         super(newFood);
 
     }
-
     @Override
     public int Price() {
         return super.Price() + 900;
@@ -18,5 +17,11 @@ public class PizzaThreeCheese extends FoodDecorator {
     @Override
     public boolean Ishot() {
         return false;
+    }
+    @Override
+    public String toString() {
+        return String.format("%s: ThreeCheese, Toppings: mozzarella cheese, smoked cheese, trappist cheese, Calories: %s Price: %s Hot: %s",
+                super.toString(), Calories(), Price(), Ishot()
+        );
     }
 }

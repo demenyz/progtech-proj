@@ -1,4 +1,4 @@
-public class FoodDecorator implements BaseFood {
+public abstract class FoodDecorator implements BaseFood {
 
 
     private BaseFood newFood;
@@ -20,5 +20,11 @@ public class FoodDecorator implements BaseFood {
     @Override
     public boolean Ishot() {
         return newFood.Ishot();
+    }
+
+    @Override
+    public String toString() {
+        {
+              return String.format("Pizza Type"); }
     }
 }

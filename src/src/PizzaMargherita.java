@@ -17,4 +17,11 @@ public class PizzaMargherita extends FoodDecorator {
     public boolean Ishot() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s; Margherita Toppings: tomato base, mozzarella cheese, tomato Calories: %i; Price: %i; Hot: %b;",
+                super.toString(), Calories(), Price(), Ishot()
+        );
+    }
 }

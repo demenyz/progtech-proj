@@ -17,4 +17,10 @@ public class PizzaUngarische extends FoodDecorator {
     public boolean Ishot() {
         return true;
     }
+    @Override
+    public String toString() {
+        return String.format("%s; Ungarische Toppings: hot sausage, cheese, salami, pepperoni, hot peppers  Calories: %i; Price: %i; Hot: %b;",
+                super.toString(), Calories(), Price(), Ishot()
+        );
+    }
 }
