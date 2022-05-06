@@ -1,28 +1,21 @@
-public class Pizza extends BaseFood {
-    private String PizzaBase;
-    private String Topping;
+public class Pizza implements BaseFood {
 
-    public String getPizzaBase() {
-        return PizzaBase;
-    }
-    public void setPizzaBase(String pizzaBase) {
-        PizzaBase = pizzaBase;
-    }
-    public String getTopping() {
-        return Topping;
-    }
-    public void setTopping(String topping) {
-        Topping = topping;
-    }
-    public Pizza() {
-    }
-
+    public String toString() {
+        return String.format("Pizza type:");}
 
     @Override
-    public String toString() {
-        return String.format("Pizza - %s; PizzaBase: %d; Toppings: %t;",
-                super.toString(),
-                PizzaBase,
-                Topping);
+    public int Price() {
+        return 1000;
     }
+
+    @Override
+    public int Calories() {
+        return 500;
+    }
+
+    @Override
+    public boolean Ishot() {
+        return false;
+    }
+
 }
