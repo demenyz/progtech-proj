@@ -1,11 +1,10 @@
-public class HamBurger extends BaseFood {
+public class HamBurger extends BaseFooda {
     private String Topping;
     private String MeatType;
 
     public String getTopping() {
         return Topping;
     }
-
     public void setTopping(String topping) {
         Topping = topping;
     }
@@ -13,10 +12,10 @@ public class HamBurger extends BaseFood {
     public String getMeatType() {
         return MeatType;
     }
-
     public void setMeatType(String meatType) {
         MeatType = meatType;
     }
+
     @Override
     public String toString() {
         return String.format("HamBurger - %s; Toppings: %t; MeatType: %h;",
