@@ -74,7 +74,7 @@ public class FormLogin extends JDialog{
                 u.first_name = rs.getString("first_name");
                 u.last_name = rs.getString("last_name");
                 u.email = rs.getString("email");
-                u.phone = rs.getString("phone");
+                u.phone = rs.getString("phone_number");
                 u.password = rs.getString("password");
             }
 
@@ -147,23 +147,21 @@ public class FormLogin extends JDialog{
 
     // Main \/ -----------------------------------
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         FormLogin login = new FormLogin(null);
         User u = login.u;
 
-        if (u != null){
-            System.out.println("|| LOG: A user just logged in! ( " + u.email + " - "+ LocalDate.now() + " - " + LocalTime.now() + " )");
+        if (u != null) {
+            System.out.println("|| LOG: A user just logged in! ( " + u.email + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
 
             login.dispose();
             FormBase.main(null);
             addUserLog(login, u);
-        }
-        else{
+        } else {
             addUserLog(login, u);
             System.out.println("|| LOG: Login failed! ( " + login.fieldMail.getText() + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
         }
-
 
 
     }

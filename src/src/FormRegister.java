@@ -128,6 +128,7 @@ public class FormRegister extends JDialog{
 
         if (user != null){
             System.out.println("Successful registration with the E-mail of: " + user.email);
+            FormLogin.main(null);
         }
         else{
             System.out.println("An error occurred during registration!");
