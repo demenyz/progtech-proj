@@ -1,11 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDateTime;
 
 public class FormBase extends JDialog{
     //private static FormBase basePanel;
@@ -15,12 +11,6 @@ public class FormBase extends JDialog{
     private JButton buttonSave;
     private JTabbedPane FoodType;
     private JPanel Hamburger_field;
-    private JRadioButton yesRadioButton;
-    private JRadioButton noRadioButton;
-    private JRadioButton margheritaRadioButton;
-    private JRadioButton threeCheeseRadioButton;
-    private JRadioButton ungarischeRadioButton;
-    private JRadioButton bologneseRadioButton;
     private JTextField PizzaField;
     private JTabbedPane panelAddress;
     private JTextField fieldCity;
@@ -48,10 +38,11 @@ public class FormBase extends JDialog{
     private JRadioButton Pasta_carbonara_radio;
     private JRadioButton Pasta_cheese_radio;
     private JRadioButton Pasta_bolognese_radio;
-    private JLabel cal;
     private JTextField Ham_ing_text;
     private JTextField Ham_cal_text;
     private JTextField Ham_hot_text;
+    private JLabel cal;
+    private JButton searchAddButton;
 
     public FormBase(JFrame parent) {
 
@@ -62,13 +53,6 @@ public class FormBase extends JDialog{
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        buttonOrder.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
 
         //Yes and No radiobutton settings ---------------------------------------
         ButtonGroup Hamburger = new ButtonGroup();
@@ -89,95 +73,71 @@ public class FormBase extends JDialog{
         //------------------------------------------------------------------------
         //                  Hamburger Radio_Buttons
         //------------------------------------------------------------------------
-        Ham_cheese_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        Ham_cheese_radio.addActionListener(e -> {
             AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
             BaseFood hamburger = (BaseFood) hamburger_factory.create("CHEESE");
             Ham_price_text.setText( String.valueOf(hamburger.Price()));
             Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
             Ham_ing_text.setText("ezt még meg kell csinálni");
-            Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+            Ham_hot_text.setText(hamburger.Ishot() ? "Yes" : "No" );
         });
-        Ham_jalapeno_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-                BaseFood hamburger = (BaseFood) hamburger_factory.create("JALAPENO");
-                Ham_price_text.setText( String.valueOf(hamburger.Price()));
-                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Ham_ing_text.setText("ezt még meg kell csinálni");
-                Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Ham_jalapeno_radio.addActionListener(e -> {
+            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+            BaseFood hamburger = (BaseFood) hamburger_factory.create("JALAPENO");
+            Ham_price_text.setText( String.valueOf(hamburger.Price()));
+            Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Ham_ing_text.setText("ezt még meg kell csinálni");
+            Ham_hot_text.setText(hamburger.Ishot() ? "Yes" : "No" );
         });
 
-        Ham_retro_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-                BaseFood hamburger = (BaseFood) hamburger_factory.create("RETRO");
-                Ham_price_text.setText( String.valueOf(hamburger.Price()));
-                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Ham_ing_text.setText("ezt még meg kell csinálni");
-                Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Ham_retro_radio.addActionListener(e -> {
+            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+            BaseFood hamburger = (BaseFood) hamburger_factory.create("RETRO");
+            Ham_price_text.setText( String.valueOf(hamburger.Price()));
+            Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Ham_ing_text.setText("ezt még meg kell csinálni");
+            Ham_hot_text.setText(hamburger.Ishot() ? "Yes" : "No" );
         });
 
-        Ham_bacon_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-                BaseFood hamburger = (BaseFood) hamburger_factory.create("BACON");
-                Ham_price_text.setText( String.valueOf(hamburger.Price()));
-                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Ham_ing_text.setText("ezt még meg kell csinálni");
-                Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Ham_bacon_radio.addActionListener(e -> {
+            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+            BaseFood hamburger = (BaseFood) hamburger_factory.create("BACON");
+            Ham_price_text.setText( String.valueOf(hamburger.Price()));
+            Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Ham_ing_text.setText("ezt még meg kell csinálni");
+            Ham_hot_text.setText(hamburger.Ishot() ? "Yes" : "No" );
         });
         //------------------------------------------------------------------------
         //                  Pizza Radio_Buttons
         //------------------------------------------------------------------------
 
-        Pizza_bolognese_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BaseFood pizza = new PizzaBolognese((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
-                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
-            }
+        Pizza_bolognese_radio.addActionListener(e -> {
+            BaseFood pizza = new PizzaBolognese((BaseFood) new Pizza());
+            Pizz_price_text.setText( String.valueOf(pizza.Price()));
+            Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+            Pizz_ing_text.setText("ezt még meg kell csinálni");
+            Pizz_hot_text.setText(pizza.Ishot() ? "Yes" : "No" );
         });
-        Pizza_margherita_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BaseFood pizza = new PizzaMargherita((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
-                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
-            }
+        Pizza_margherita_radio.addActionListener(e -> {
+            BaseFood pizza = new PizzaMargherita((BaseFood) new Pizza());
+            Pizz_price_text.setText( String.valueOf(pizza.Price()));
+            Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+            Pizz_ing_text.setText("ezt még meg kell csinálni");
+            Pizz_hot_text.setText(pizza.Ishot() ? "Yes" : "No" );
         });
-        Pizza_threecheese_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
-                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
-            }
+        Pizza_threecheese_radio.addActionListener(e -> {
+            BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
+            Pizz_price_text.setText( String.valueOf(pizza.Price()));
+            Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+            Pizz_ing_text.setText("ezt még meg kell csinálni");
+            Pizz_hot_text.setText(pizza.Ishot() ? "Yes" : "No" );
         });
-        Pizza_ungarische_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BaseFood pizza = new PizzaUngarische((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
-                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
-            }
+        Pizza_ungarische_radio.addActionListener(e -> {
+            BaseFood pizza = new PizzaUngarische((BaseFood) new Pizza());
+            Pizz_price_text.setText( String.valueOf(pizza.Price()));
+            Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+            Pizz_ing_text.setText("ezt még meg kell csinálni");
+            Pizz_hot_text.setText(pizza.Ishot() ? "Yes" : "No" );
         });
 
         //------------------------------------------------------------------------
@@ -185,49 +145,37 @@ public class FormBase extends JDialog{
         //------------------------------------------------------------------------
 
 
-        Pasta_ham_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("HAM");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Pasta_ham_radio.addActionListener(e -> {
+            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+            BaseFood hamburger = (BaseFood) pasta_factory.create("HAM");
+            Pas_price_text.setText( String.valueOf(hamburger.Price()));
+            Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Pas_ing_text.setText("ezt még meg kell csinálni");
+            Pas_hot_text.setText(hamburger.Ishot() ? "Yes" : "No" );
         });
-        Pasta_carbonara_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("CARBONARA");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Pasta_carbonara_radio.addActionListener(e -> {
+            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+            BaseFood hamburger = (BaseFood) pasta_factory.create("CARBONARA");
+            Pas_price_text.setText( String.valueOf(hamburger.Price()));
+            Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Pas_ing_text.setText("ezt még meg kell csinálni");
+            Pas_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
         });
-        Pasta_cheese_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("CHEESE");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Pasta_cheese_radio.addActionListener(e -> {
+            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+            BaseFood hamburger = (BaseFood) pasta_factory.create("CHEESE");
+            Pas_price_text.setText( String.valueOf(hamburger.Price()));
+            Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Pas_ing_text.setText("ezt még meg kell csinálni");
+            Pas_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
         });
-        Pasta_bolognese_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("BOLOGNESE");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
-            }
+        Pasta_bolognese_radio.addActionListener(e -> {
+            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+            BaseFood hamburger = (BaseFood) pasta_factory.create("BOLOGNESE");
+            Pas_price_text.setText( String.valueOf(hamburger.Price()));
+            Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Pas_ing_text.setText("ezt még meg kell csinálni");
+            Pas_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
         });
 
         //------------------------------------------------------------------------
@@ -235,32 +183,37 @@ public class FormBase extends JDialog{
         //------------------------------------------------------------------------
 
 
-        buttonOrder.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
-                System.out.println(pizza.toString());
-            }
+        buttonOrder.addActionListener(e -> {
+            BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
         });
 
-        buttonSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        buttonSave.addActionListener(e -> {
+            if (userHasAddress()){
+                JOptionPane.showMessageDialog(parent, "You already have an address registered on your account!", "Error!", JOptionPane.ERROR_MESSAGE);
+                checkUserAddress();
+            }
+            else{
                 addUserAddress();
             }
         });
 
+        searchAddButton.addActionListener(e -> {
+            if (userHasAddress()){
+                checkUserAddress();
+            }
+            else{
+                JOptionPane.showMessageDialog(parent, "No addresses found on your account!\nPlease add a new address using the form!", "Error!", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         setVisible(true);
-
-
     }
 
     // METHODS ---------------------------------
 
-    public User u;
+    public static String userId = FormLogin.getUserId();
 
-
+    public Address add;
     public void addUserAddress() {
 
         try{
@@ -277,8 +230,7 @@ public class FormBase extends JDialog{
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-
-            preparedStatement.setInt(1, 20);
+            preparedStatement.setInt(1, Integer.parseInt(userId));
             preparedStatement.setString(2, this.fieldCity.getText());
             preparedStatement.setString(3, this.fieldStreet.getText());
             preparedStatement.setString(4, this.fieldNum.getText());
@@ -295,12 +247,126 @@ public class FormBase extends JDialog{
         }
 
     }
+    public void checkUserAddress() {
+
+        add = null;
+
+        final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
+        final String USERNAME = "root";
+        final String PASSWORD = "";
+
+        try{
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT user_id,city,street,number,apartment FROM user_address INNER JOIN users ON user_address.user_id=users.id WHERE user_address.user_id=?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, userId);
+
+            // Get the information of the currently logged-in user's address ... ----------------------
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()){
+                add = new Address();
+                add.user_id = rs.getInt("user_id");
+                add.city = rs.getString("city");
+                add.street = rs.getString("street");
+                add.number = rs.getString("number");
+                add.apartment = rs.getString("apartment");
+
+            }
+
+
+            fieldCity.setText(add.city);
+            this.fieldStreet.setText(add.street);
+            this.fieldNum.setText(add.number);
+            this.fieldApartment.setText(add.apartment);
+            System.out.println("|| LOG: User's address with the ID of '"+userId +"':\nCity: "+ add.city +"\nStreet: "+ add.street +" "+ add.number +"\nApartment: "+add.apartment);
+
+            stmt.close();
+            conn.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        //return add; // Return the address of the user with the given ID ...
+    }
+    public boolean userHasAddress(){
+        final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
+        final String USERNAME = "root";
+        final String PASSWORD = "";
+
+        try{
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT user_id FROM user_address INNER JOIN users ON user_address.user_id=users.id WHERE user_address.user_id=?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, userId);
+
+            // Get the information of the currently logged-in user's address ... ----------------------
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (!rs.isBeforeFirst() ) {
+                System.out.println("|| LOG: Address of the user does not exist. Please save one.");
+                return false;
+            }
+
+
+            stmt.close();
+            conn.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+    public void addOrderLog(){
+        try{
+            final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
+            final String USERNAME = "root";
+            final String PASSWORD = "";
+
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            // If connection is successful ... -------------------------
+            Statement stmt = conn.createStatement();
+
+            String sql = "INSERT INTO orders (order_date, order_price, order_qty, order_txt) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setString(1, String.valueOf(LocalDateTime.now()));
+            preparedStatement.setString(2, "");
+            preparedStatement.setInt(3, 10);
+            preparedStatement.setString(4, "");
+
+
+            preparedStatement.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     //public static FormBase base;
     public static void main(String[] args){
 
-        FormBase base = new FormBase(null);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        FormBase base = new FormBase(null);
     }
 
 }
