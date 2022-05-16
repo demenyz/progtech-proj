@@ -13,7 +13,8 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Password"/>
+          <font name="Calibri" size="16"/>
+          <text value="Password:"/>
         </properties>
       </component>
       <component id="91bb1" class="javax.swing.JTextField" binding="fieldMail">
@@ -29,6 +30,9 @@
           <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font size="12"/>
+          <hideActionText value="false"/>
+          <horizontalTextPosition value="11"/>
           <text value="Login"/>
         </properties>
       </component>
@@ -45,7 +49,8 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="E-mail"/>
+          <font name="Calibri" size="16"/>
+          <text value="E-mail:"/>
         </properties>
       </component>
       <component id="58570" class="javax.swing.JLabel">
@@ -53,8 +58,8 @@
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <font name="Fira Code" size="20" style="1"/>
-          <text value="Please log in using your credentials!"/>
+          <font name="JetBrains Mono" size="20" style="1"/>
+          <text value="Z and K Foodies | Log-in"/>
         </properties>
       </component>
       <component id="65cbb" class="javax.swing.JLabel">
