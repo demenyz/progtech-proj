@@ -11,9 +11,9 @@ public class FormMain extends JDialog {
     public FormMain(JFrame parent) {
 
         super(parent);
-        setTitle("Z & K Foodies Ltd. | Please choose an option!");
+        setTitle("Z & K Foodies Ltd. | Please login or register!");
         setContentPane(mainPanel);
-        setMinimumSize(new Dimension(400, 400));
+        setMinimumSize(new Dimension(350, 300));
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -41,6 +41,13 @@ public class FormMain extends JDialog {
     }
 
     public static void main(String[] args) {
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         FormMain main = new FormMain(null);
     }
 }
