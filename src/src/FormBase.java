@@ -14,13 +14,9 @@ public class FormBase extends JDialog{
     private JTabbedPane panelSettings;
     private JButton buttonSave;
     private JTabbedPane FoodType;
-    private JPanel Pizza_field;
     private JPanel Hamburger_field;
-    private JPanel Pasta_field;
     private JRadioButton yesRadioButton;
     private JRadioButton noRadioButton;
-    private JRadioButton yesRadioButton1;
-    private JRadioButton noRadioButton1;
     private JRadioButton margheritaRadioButton;
     private JRadioButton threeCheeseRadioButton;
     private JRadioButton ungarischeRadioButton;
@@ -31,6 +27,31 @@ public class FormBase extends JDialog{
     private JTextField fieldStreet;
     private JTextField fieldNum;
     private JTextField fieldApartment;
+    private JRadioButton Ham_bacon_radio;
+    private JRadioButton Ham_retro_radio;
+    private JRadioButton Ham_jalapeno_radio;
+    private JRadioButton Ham_cheese_radio;
+    private JTextField Ham_price_text;
+    private JTextField Pizz_price_text;
+    private JTextField Pizz_ing_text;
+    private JTextField Pizz_cal_text;
+    private JTextField Pizz_hot_text;
+    private JTextField Pas_price_text;
+    private JTextField Pas_ing_text;
+    private JTextField Pas_cal_text;
+    private JTextField Pas_hot_text;
+    private JRadioButton Pizza_bolognese_radio;
+    private JRadioButton Pizza_margherita_radio;
+    private JRadioButton Pizza_threecheese_radio;
+    private JRadioButton Pizza_ungarische_radio;
+    private JRadioButton Pasta_ham_radio;
+    private JRadioButton Pasta_carbonara_radio;
+    private JRadioButton Pasta_cheese_radio;
+    private JRadioButton Pasta_bolognese_radio;
+    private JLabel cal;
+    private JTextField Ham_ing_text;
+    private JTextField Ham_cal_text;
+    private JTextField Ham_hot_text;
 
     public FormBase(JFrame parent) {
 
@@ -50,23 +71,169 @@ public class FormBase extends JDialog{
         });
 
         //Yes and No radiobutton settings ---------------------------------------
-        ButtonGroup group = new ButtonGroup();
-        group.add(margheritaRadioButton);
-        group.add(ungarischeRadioButton);
-        group.add(bologneseRadioButton);
-        group.add(threeCheeseRadioButton);
+        ButtonGroup Hamburger = new ButtonGroup();
+        Hamburger.add(Ham_bacon_radio);
+        Hamburger.add(Ham_cheese_radio);
+        Hamburger.add(Ham_jalapeno_radio);
+        Hamburger.add(Ham_retro_radio);
+        ButtonGroup Pizza = new ButtonGroup();
+        Pizza.add(Pizza_bolognese_radio);
+        Pizza.add(Pizza_margherita_radio);
+        Pizza.add(Pizza_threecheese_radio);
+        Pizza.add(Pizza_ungarische_radio);
+        ButtonGroup Pasta = new ButtonGroup();
+        Pasta.add(Pasta_bolognese_radio);
+        Pasta.add(Pasta_carbonara_radio);
+        Pasta.add(Pasta_cheese_radio);
+        Pasta.add(Pasta_ham_radio);
+        //------------------------------------------------------------------------
+        //                  Hamburger Radio_Buttons
+        //------------------------------------------------------------------------
+        Ham_cheese_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+            BaseFood hamburger = (BaseFood) hamburger_factory.create("CHEESE");
+            Ham_price_text.setText( String.valueOf(hamburger.Price()));
+            Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+            Ham_ing_text.setText("ezt még meg kell csinálni");
+            Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        Ham_jalapeno_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+                BaseFood hamburger = (BaseFood) hamburger_factory.create("JALAPENO");
+                Ham_price_text.setText( String.valueOf(hamburger.Price()));
+                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Ham_ing_text.setText("ezt még meg kell csinálni");
+                Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+
+        Ham_retro_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+                BaseFood hamburger = (BaseFood) hamburger_factory.create("RETRO");
+                Ham_price_text.setText( String.valueOf(hamburger.Price()));
+                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Ham_ing_text.setText("ezt még meg kell csinálni");
+                Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+
+        Ham_bacon_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
+                BaseFood hamburger = (BaseFood) hamburger_factory.create("BACON");
+                Ham_price_text.setText( String.valueOf(hamburger.Price()));
+                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Ham_ing_text.setText("ezt még meg kell csinálni");
+                Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        //------------------------------------------------------------------------
+        //                  Pizza Radio_Buttons
         //------------------------------------------------------------------------
 
-
-
-        threeCheeseRadioButton.addActionListener(new ActionListener() {
+        Pizza_bolognese_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BaseFood pizza = new PizzaBolognese((BaseFood) new Pizza());
+                Pizz_price_text.setText( String.valueOf(pizza.Price()));
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        Pizza_margherita_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BaseFood pizza = new PizzaMargherita((BaseFood) new Pizza());
+                Pizz_price_text.setText( String.valueOf(pizza.Price()));
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        Pizza_threecheese_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
-                System.out.println(pizza.toString());
-                PizzaField.setText(pizza.toString());
+                Pizz_price_text.setText( String.valueOf(pizza.Price()));
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
             }
         });
+        Pizza_ungarische_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BaseFood pizza = new PizzaUngarische((BaseFood) new Pizza());
+                Pizz_price_text.setText( String.valueOf(pizza.Price()));
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
+                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+
+        //------------------------------------------------------------------------
+        //                  Pasta Radio_Buttons
+        //------------------------------------------------------------------------
+
+
+        Pasta_ham_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+                BaseFood hamburger = (BaseFood) pasta_factory.create("HAM");
+                Pas_price_text.setText( String.valueOf(hamburger.Price()));
+                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Pas_ing_text.setText("ezt még meg kell csinálni");
+                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        Pasta_carbonara_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+                BaseFood hamburger = (BaseFood) pasta_factory.create("CARBONARA");
+                Pas_price_text.setText( String.valueOf(hamburger.Price()));
+                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Pas_ing_text.setText("ezt még meg kell csinálni");
+                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        Pasta_cheese_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+                BaseFood hamburger = (BaseFood) pasta_factory.create("CHEESE");
+                Pas_price_text.setText( String.valueOf(hamburger.Price()));
+                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Pas_ing_text.setText("ezt még meg kell csinálni");
+                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+        Pasta_bolognese_radio.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
+                BaseFood hamburger = (BaseFood) pasta_factory.create("BOLOGNESE");
+                Pas_price_text.setText( String.valueOf(hamburger.Price()));
+                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
+                Pas_ing_text.setText("ezt még meg kell csinálni");
+                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+            }
+        });
+
+        //------------------------------------------------------------------------
+        //                         End_Food_Buttons
+        //------------------------------------------------------------------------
+
 
         buttonOrder.addActionListener(new ActionListener() {
             @Override
@@ -85,6 +252,8 @@ public class FormBase extends JDialog{
 
 
         setVisible(true);
+
+
     }
 
     // METHODS ---------------------------------
