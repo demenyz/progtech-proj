@@ -17,7 +17,7 @@ public class FormLogin extends JDialog{
     public FormLogin(JFrame parent) {
 
         super(parent);
-        setTitle("Z & K Foodies Ltd. | Please choose an option!");
+        setTitle("Z & K Foodies Ltd. | Log in");
         setContentPane(loginPanel);
         setMinimumSize(new Dimension(500, 285));
         setModal(true);
@@ -31,15 +31,22 @@ public class FormLogin extends JDialog{
 
             u = authenticateUser(email, pw);
 
-            if (u != null){
-                dispose();
+            if (email.isEmpty() || pw.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Please fill all required fields!", "Error!", JOptionPane.ERROR_MESSAGE);
             }
             else{
-                JOptionPane.showMessageDialog(FormLogin.this,
-                        "The provided credentials are invalid!\nPlease try again!",
-                        "Error!",
-                        JOptionPane.ERROR_MESSAGE);
+                if (u != null){
+                    dispose();
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,
+                            "The provided credentials are invalid!\nPlease try again!",
+                            "Error!",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
+
+
         });
 
         setVisible(true);
@@ -49,12 +56,16 @@ public class FormLogin extends JDialog{
     // Methods \/ -----------------------------------
 
     public User u;
+    public static String user_id; // For other panels
+
     private User authenticateUser(String email, String pw) {
+
         User u = null;
 
         final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
         final String USERNAME = "root";
         final String PASSWORD = "";
+
 
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
@@ -71,12 +82,15 @@ public class FormLogin extends JDialog{
 
             if (rs.next()){
                 u = new User();
+                u.userid = rs.getString("id");
                 u.first_name = rs.getString("first_name");
                 u.last_name = rs.getString("last_name");
                 u.email = rs.getString("email");
                 u.phone = rs.getString("phone_number");
                 u.password = rs.getString("password");
             }
+
+            user_id = u.userid;
 
             stmt.close();
             conn.close();
@@ -91,8 +105,10 @@ public class FormLogin extends JDialog{
     private static String getIpAdd() {
 
         String ipAdd = "";
+
         try {
             URL getIpFromURL = new URL("https://checkip.amazonaws.com");
+
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     getIpFromURL.openStream()));
 
@@ -143,11 +159,20 @@ public class FormLogin extends JDialog{
         }
 
     }
+    public static String getUserId(){ // Needed to return the user's ID to other form ...
 
+        return user_id;
+    }
 
     // Main \/ -----------------------------------
 
     public static void main(String[] args) {
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         FormLogin login = new FormLogin(null);
         User u = login.u;
