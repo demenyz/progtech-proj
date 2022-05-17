@@ -1,13 +1,18 @@
+import org.tinylog.Logger;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class FormRegister extends JDialog{
+
+    //region Fields, buttons, etc.
+
     private JTextField fieldMail;
     private JTextField fieldFname;
     private JTextField fieldLname;
@@ -17,7 +22,12 @@ public class FormRegister extends JDialog{
     private JButton buttonCancel;
     private JPanel registerPanel;
 
-    public FormRegister(JFrame parent){ // Reg. panel
+    //endregion
+
+    public FormRegister(JFrame parent){
+
+        //region Settings of the panel
+
         super(parent);
         setTitle("Z & K Foodies Ltd. | Register an account");
         setContentPane(registerPanel);
@@ -26,27 +36,22 @@ public class FormRegister extends JDialog{
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        //endregion
+
 
         // Register -------------------------------------
-        buttonRegister.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                registerUser();
-            }
-        });
+        buttonRegister.addActionListener(e -> registerUser());
 
         // Cancel -------------------------------------
-        buttonCancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        buttonCancel.addActionListener(e -> dispose());
 
         setVisible(true);
     }
 
-    // METHODS -----------------------------
+
+    //region Methods
+
+    public User user;
 
     private void registerUser() {
         String first_name = fieldFname.getText();
@@ -74,8 +79,6 @@ public class FormRegister extends JDialog{
             JOptionPane.showMessageDialog(this, "An error occurred during registration!\nPlease try again!", "Error!", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    public User user;
     private User addUser(String first_name, String last_name, String email, String phone_number, String password) { // Add the new user to the Db ...
         User u = null;
 
@@ -107,6 +110,10 @@ public class FormRegister extends JDialog{
                 u.email = email;
                 u.phone = phone_number;
                 u.password = password;
+                Logger.info("NEW REGISTRATION SUCCESSFUL! ( " + u.email + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
+            }
+            else{
+                Logger.info("NEW REGISTRATION FAILED! ( " + fieldMail.getText() + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
             }
 
             stmt.close();
@@ -120,12 +127,14 @@ public class FormRegister extends JDialog{
         return u;
     }
 
+    //endregion
+
 
     // MAIN -----------------------------
     public static void main(String[] args){
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Windows look instead of the ugly default one
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,11 +143,7 @@ public class FormRegister extends JDialog{
         User user = reg.user;
 
         if (user != null){
-            System.out.println("|| LOG: Successful registration with the E-mail of: " + user.email);
             FormLogin.main(null);
-        }
-        else{
-            System.out.println("|| LOG: An error occurred during registration!");
         }
     }
 }

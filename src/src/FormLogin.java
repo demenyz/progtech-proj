@@ -1,3 +1,5 @@
+import org.tinylog.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -9,12 +11,19 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class FormLogin extends JDialog{
+
+    //region Fields, buttons, etc.
+
     private JTextField fieldMail;
     private JButton buttonLogin;
     private JPasswordField fieldPw;
     private JPanel loginPanel;
 
+    //endregion
+
     public FormLogin(JFrame parent) {
+
+        //region Settings of the panel
 
         super(parent);
         setTitle("Z & K Foodies Ltd. | Log in");
@@ -23,6 +32,8 @@ public class FormLogin extends JDialog{
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        //endregion
 
 
         buttonLogin.addActionListener(e -> {
@@ -58,6 +69,8 @@ public class FormLogin extends JDialog{
     public User u;
     public static String user_id; // For other panels
 
+    //region Important methods
+
     private User authenticateUser(String email, String pw) {
 
         User u = null;
@@ -88,9 +101,17 @@ public class FormLogin extends JDialog{
                 u.email = rs.getString("email");
                 u.phone = rs.getString("phone_number");
                 u.password = rs.getString("password");
+                user_id = u.userid;
+                Logger.info("NEW LOGIN! ( " + u.email + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
+                addUserLog(u);
+            }
+            else{
+                Logger.warn("LOGIN FAILED! ( " + this.fieldMail.getText() + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
+                addUserLog(u);
             }
 
-            user_id = u.userid;
+            //user_id = u.userid;
+
 
             stmt.close();
             conn.close();
@@ -120,7 +141,7 @@ public class FormLogin extends JDialog{
 
         return ipAdd;
     }
-    private static void addUserLog(FormLogin form, User u) {
+    private void addUserLog(User u) {
 
         try{
             final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
@@ -141,7 +162,7 @@ public class FormLogin extends JDialog{
                 preparedStatement.setString(4, "Successful");
             }
             else{
-                preparedStatement.setString(1, form.fieldMail.getText());
+                preparedStatement.setString(1, this.fieldMail.getText());
                 preparedStatement.setString(4, "Failed");
             }
 
@@ -160,16 +181,17 @@ public class FormLogin extends JDialog{
 
     }
     public static String getUserId(){ // Needed to return the user's ID to other form ...
-
         return user_id;
     }
 
-    // Main \/ -----------------------------------
+    //endregion
+
+    // MAIN -----------------------------------
 
     public static void main(String[] args) {
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Windows look instead of the ugly default one
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,16 +200,11 @@ public class FormLogin extends JDialog{
         User u = login.u;
 
         if (u != null) {
-            System.out.println("|| LOG: A user just logged in! ( " + u.email + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
 
             login.dispose();
             FormBase.main(null);
-            addUserLog(login, u);
-        } else {
-            addUserLog(login, u);
-            System.out.println("|| LOG: Login failed! ( " + login.fieldMail.getText() + " - " + LocalDate.now() + " - " + LocalTime.now() + " )");
+
+
         }
-
-
     }
 }

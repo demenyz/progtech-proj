@@ -4,11 +4,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class FormMain extends JDialog {
+
+    //region Fields, buttons, etc.
+
     private JButton buttonReg;
     private JButton buttonLog;
     private JPanel mainPanel;
 
+    //endregion
+
     public FormMain(JFrame parent) {
+
+        //region Settings of the panel
 
         super(parent);
         setTitle("Z & K Foodies Ltd. | Please login or register!");
@@ -18,8 +25,11 @@ public class FormMain extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        //endregion
 
-        // REGISTER BUTTON ----------------------------------
+
+        //region Register & Login button
+
         buttonReg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -28,7 +38,6 @@ public class FormMain extends JDialog {
             }
         });
 
-        // LOGIN BUTTON ----------------------------------
         buttonLog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -37,13 +46,15 @@ public class FormMain extends JDialog {
             }
         });
 
+        //endregion
+
         setVisible(true);
     }
 
     public static void main(String[] args) {
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); // Windows look instead of the ugly default one
         } catch (Exception e) {
             e.printStackTrace();
         }
