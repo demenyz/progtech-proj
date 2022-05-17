@@ -8,6 +8,7 @@ public class Container{
     public static int price = 0;
     public static List<Integer> prices = new ArrayList<Integer>();
     public static int total_price = 0;
+    public static List<String> foodies = new ArrayList<String>();
 
 
     // It was a try but not worked

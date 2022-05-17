@@ -1,16 +1,16 @@
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import org.tinylog.Logger;
 
 public class FormBase extends JDialog{
-    //private static FormBase basePanel;
-    private JButton buttonOrder;
+    //region Panels, buttons, etc...
+
+    private JButton buttonHamb;
     private JPanel basePanel;
     private JTabbedPane panelSettings;
     private JButton buttonSave;
@@ -52,8 +52,15 @@ public class FormBase extends JDialog{
     private JButton clearAllButton;
     private JLabel cal;
     private JButton searchAddButton;
+    private JButton buttonOrder;
+    private JButton buttonPizza;
+    private JButton buttonPasta;
+
+    //endregion
 
     public FormBase(JFrame parent) {
+
+        //region Settings of the panel
 
         super(parent);
         setTitle("Z & K Foodies Ltd. | Place your order!");
@@ -63,6 +70,10 @@ public class FormBase extends JDialog{
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         basket_textbox.append("Your Basket:");
+
+        //endregion
+
+        //region actionListeners for Radio buttons, bullshit ton of code
 
         //Yes and No radiobutton settings ---------------------------------------
         ButtonGroup FoodButtons = new ButtonGroup();
@@ -185,86 +196,90 @@ public class FormBase extends JDialog{
 
 
         //------------------------------------------------------------------------
-        //                         End_Food_Buttons
+        //                         END OF 'FOOD' BUTTONS
         //------------------------------------------------------------------------
+        //endregion
 
-        //------------------------------------------------------------------------
-        //                         Get_button_text
-        //------------------------------------------------------------------------
+        //region A little more important buttons than before ...
 
+        buttonHamb.addActionListener(e -> orderFoodies(FoodButtons));
+        buttonPizza.addActionListener(e -> orderFoodies(FoodButtons));
+        buttonPasta.addActionListener(e -> orderFoodies(FoodButtons));
 
+        // CONFIRM ORDER BUTTON
         buttonOrder.addActionListener(e -> {
-            String order = Container.getSelectedButtonText(FoodButtons);
-            if (Objects.equals(order, "Jalapeno") || Objects.equals(order, "Cheese") || Objects.equals(order, "Retro") || Objects.equals(order, "Bacon"))
-            {
-                basket_textbox.append("\n"+order + " Hamburger " + Ham_price_text.getText());
-                Container.prices.add(Integer.valueOf(Ham_price_text.getText().substring(0,4)));
-                Total_Price_text.setText(sum_prices((ArrayList<Integer>) Container.prices) + " HUF");
-            }
-            else if (Objects.equals(order, "Bolognese") || Objects.equals(order, "Margherita") || Objects.equals(order, "Threecheese") || Objects.equals(order, "Ungarische"))
-            {
-                basket_textbox.append("\n"+order + " Pizza " + Pizz_price_text.getText());
-                Container.prices.add(Integer.valueOf(Pizz_price_text.getText().substring(0,4)));
-                Total_Price_text.setText(sum_prices((ArrayList<Integer>) Container.prices) + " HUF");
 
+            if (userHasAddress()){
+                if (Container.foodies.size() == 0){
+                    JOptionPane.showMessageDialog(parent, "Add an item to your basket before ordering!", "Error!", JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    JOptionPane.showMessageDialog(parent, "Your order was successful!\nWe'll contact you soon with the details!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+                    addOrderLog();
+                    Logger.info("NEW ORDER CREATED! USER: " + userId + ". ( " + LocalDateTime.now() + " )");
+                    clearBasket();
+                }
             }
-            else if (Objects.equals(order, "Milanese") || Objects.equals(order, "Cheese and cream") || Objects.equals(order, "Carbonara") || Objects.equals(order, "Ham")){
-                basket_textbox.append("\n"+order + " Pasta " + Pas_price_text.getText());
-                Container.prices.add(Integer.valueOf(Pas_price_text.getText().substring(0,4)));
-                Total_Price_text.setText(sum_prices((ArrayList<Integer>) Container.prices) + " HUF");
+            else{
+                JOptionPane.showMessageDialog(parent, "You don't have an address save to your account!\nPlease go to the 'Settings' tab to create one!", "Error!", JOptionPane.ERROR_MESSAGE);
             }
-            else {
-                System.out.println("Pick any food in the list");
-            }
+
+
 
         });
 
+
+        // UNDO LAST ADDED ITEM
         undoLastItemOrderedButton.addActionListener(e -> {
+
             String content = null;
+
             try {
                 content = basket_textbox.getDocument().getText(0, basket_textbox.getDocument().getLength());
             } catch (BadLocationException ex) {
-                System.out.println("You can't remove more lines");
+                JOptionPane.showMessageDialog(parent, "Your basket is empty!", "Error!", JOptionPane.ERROR_MESSAGE);
             }
+
             int lastLineBreak = content.lastIndexOf('\n');
             try {
                 basket_textbox.getDocument().remove(lastLineBreak, basket_textbox.getDocument().getLength() - lastLineBreak);
             } catch (BadLocationException ex) {
-                System.out.println("You can't remove more lines");
+                JOptionPane.showMessageDialog(parent, "Your basket is empty!", "Error!", JOptionPane.ERROR_MESSAGE);
             }
-            if (Container.prices.size() == 0)
+
+            if (Container.prices.size() != 0)
             {
-                System.out.println("You can't remove more price");
-            }
-            else{
-                Container.total_price = Integer.valueOf(Total_Price_text.getText().substring(0,4));
+                Container.total_price = Integer.parseInt(Total_Price_text.getText().substring(0,4));
                 Container.prices.remove(Container.prices.size()-1);
-                Total_Price_text.setText(sum_prices((ArrayList<Integer>) Container.prices) + " HUF");
+                Container.foodies.remove(Container.foodies.size()-1);
+                Total_Price_text.setText(sumOfPrices((ArrayList<Integer>) Container.prices) + " HUF");
             }
 
         });
 
-        clearAllButton.addActionListener(e -> {
-            basket_textbox.setText(null);
-            basket_textbox.append("Your Basket:");
-            Container.prices.clear();
-            Total_Price_text.setText("0 HUF");
-        });
-        buttonOrder.addActionListener(e -> {
-            BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
-        });
 
+        // CLEAR THE BASKET
+        clearAllButton.addActionListener(e -> clearBasket());
+
+
+        // SAVE NEW ADDRESS
         buttonSave.addActionListener(e -> {
+
             if (userHasAddress()){
                 JOptionPane.showMessageDialog(parent, "You already have an address registered on your account!", "Error!", JOptionPane.ERROR_MESSAGE);
                 checkUserAddress();
+                //Logger.info("Address got for user: " + userId);
             }
             else{
                 addUserAddress();
+                Logger.info("New address registered for the userID: " + userId + ". ( " + LocalDateTime.now() + " )");
             }
         });
 
+
+        // SEARCH FOR ADDRESS ON ACCOUNT
         searchAddButton.addActionListener(e -> {
+
             if (userHasAddress()){
                 checkUserAddress();
             }
@@ -272,30 +287,64 @@ public class FormBase extends JDialog{
                 JOptionPane.showMessageDialog(parent, "No addresses found on your account!\nPlease add a new address using the form!", "Error!", JOptionPane.ERROR_MESSAGE);
             }
         });
+        //endregion
 
         setVisible(true);
-
-
 
     }
 
     // METHODS ---------------------------------
-    public User u;
-    // PRICES LIST SUM
-    public int sum_prices(ArrayList<Integer> list)
-    {
-        int amount=0;
-        for (int i = 0; i < list.size() ; i++) {
-            amount+= list.get(i);
+
+    public Address add; // Address of the logged-in user
+    public static String userId = FormLogin.getUserId(); // ID of the logged-in user
+
+
+    //region Important methods ...
+
+    public void clearBasket(){
+        basket_textbox.setText(null);
+        basket_textbox.append("Your Basket:");
+        Container.prices.clear();
+        Container.foodies.clear();
+        Total_Price_text.setText("0 HUF");
+    }
+
+    public int sumOfPrices(ArrayList<Integer> list) {
+        int amount = 0;
+        for (Integer integer : list) {
+            amount += integer;
         }
         return amount;
     }
 
-    // METHODS ---------------------------------
+    public void orderFoodies(ButtonGroup FoodButtons) {
+        String order = Container.getSelectedButtonText(FoodButtons);
+        if (Objects.equals(order, "Jalapeno") || Objects.equals(order, "Cheese") || Objects.equals(order, "Retro") || Objects.equals(order, "Bacon"))
+        {
+            basket_textbox.append("\n"+order + " Hamburger " + Ham_price_text.getText());
+            Container.prices.add(Integer.valueOf(Ham_price_text.getText().substring(0,4)));
+            Total_Price_text.setText(sumOfPrices((ArrayList<Integer>) Container.prices) + " HUF");
+            Container.foodies.add(order);
+        }
+        else if (Objects.equals(order, "Bolognese") || Objects.equals(order, "Margherita") || Objects.equals(order, "Threecheese") || Objects.equals(order, "Ungarische"))
+        {
+            basket_textbox.append("\n"+order + " Pizza " + Pizz_price_text.getText());
+            Container.prices.add(Integer.valueOf(Pizz_price_text.getText().substring(0,4)));
+            Total_Price_text.setText(sumOfPrices((ArrayList<Integer>) Container.prices) + " HUF");
+            Container.foodies.add(order);
+        }
+        else if (Objects.equals(order, "Milanese") || Objects.equals(order, "Cheese and cream") || Objects.equals(order, "Carbonara") || Objects.equals(order, "Ham")){
+            basket_textbox.append("\n"+order + " Pasta " + Pas_price_text.getText());
+            Container.prices.add(Integer.valueOf(Pas_price_text.getText().substring(0,4)));
+            Total_Price_text.setText(sumOfPrices((ArrayList<Integer>) Container.prices) + " HUF");
+            Container.foodies.add(order);
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "You did not choose any food yet!\nPlease put something in the basket!", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
 
-    public static String userId = FormLogin.getUserId();
+    }
 
-    public Address add;
     public void addUserAddress() {
 
         try{
@@ -329,6 +378,7 @@ public class FormBase extends JDialog{
         }
 
     }
+
     public void checkUserAddress() {
 
         add = null;
@@ -364,7 +414,8 @@ public class FormBase extends JDialog{
             this.fieldStreet.setText(add.street);
             this.fieldNum.setText(add.number);
             this.fieldApartment.setText(add.apartment);
-            System.out.println("|| LOG: User's address with the ID of '"+userId +"':\nCity: "+ add.city +"\nStreet: "+ add.street +" "+ add.number +"\nApartment: "+add.apartment);
+            Logger.info("Address loaded for the userID: " + userId + ". ( " + LocalDateTime.now() + " )");
+            //System.out.println("|| LOG: User's address with the ID of '"+userId +"':\nCity: "+ add.city +"\nStreet: "+ add.street +" "+ add.number +"\nApartment: "+add.apartment);
 
             stmt.close();
             conn.close();
@@ -375,6 +426,7 @@ public class FormBase extends JDialog{
 
         //return add; // Return the address of the user with the given ID ...
     }
+
     public boolean userHasAddress(){
         final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
         final String USERNAME = "root";
@@ -393,7 +445,8 @@ public class FormBase extends JDialog{
             ResultSet rs = preparedStatement.executeQuery();
 
             if (!rs.isBeforeFirst() ) {
-                System.out.println("|| LOG: Address of the user does not exist. Please save one.");
+                //System.out.println("|| LOG: Address of the user does not exist. Please save one.");
+                Logger.warn("Address of the user '" + userId + "' does not exist. Save a new one. ( " + LocalDateTime.now() + " )");
                 return false;
             }
 
@@ -407,26 +460,33 @@ public class FormBase extends JDialog{
 
         return true;
     }
+
     public void addOrderLog(){
         try{
             final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
             final String USERNAME = "root";
             final String PASSWORD = "";
+            StringBuilder foodies = new StringBuilder();
+
+            for (int i = 0; i < Container.foodies.size(); i++) {
+                foodies.append(Container.foodies.get(i)).append(", ");
+
+            }
 
             Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
 
             // If connection is successful ... -------------------------
             Statement stmt = conn.createStatement();
 
-            String sql = "INSERT INTO orders (order_date, order_price, order_qty, order_txt) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO orders (user_id, order_date, order_price, order_qty, order_txt) VALUES (?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-
-            preparedStatement.setString(1, String.valueOf(LocalDateTime.now()));
-            preparedStatement.setString(2, "");
-            preparedStatement.setInt(3, 10);
-            preparedStatement.setString(4, "");
+            preparedStatement.setInt(1, Integer.parseInt(userId));
+            preparedStatement.setString(2, String.valueOf(LocalDateTime.now()));
+            preparedStatement.setString(3, sumOfPrices((ArrayList<Integer>) Container.prices) + " Ft");
+            preparedStatement.setInt(4, Container.foodies.size());
+            preparedStatement.setString(5, foodies.toString());
 
 
             preparedStatement.executeUpdate();
@@ -439,7 +499,11 @@ public class FormBase extends JDialog{
         }
     }
 
-    //public static FormBase base;
+    //endregion
+
+
+    // MAIN -------------------------------
+
     public static void main(String[] args){
 
         try {
