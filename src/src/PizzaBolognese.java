@@ -11,7 +11,7 @@ public class PizzaBolognese extends FoodDecorator {
 
     @Override
     public int Calories() {
-        return super.Calories() + 700;
+        return super.Calories() + 500;
     }
 
     @Override
@@ -21,8 +21,6 @@ public class PizzaBolognese extends FoodDecorator {
 
     @Override
     public String toString() {
-        return String.format("%s; Bolognese Toppings: bolognese, cheese, hot peppers Calories: %i; Price: %i; Hot: %b;",
-        super.toString(), Calories(), Price(), Ishot()
-        );
+        return String.format("Bolognese, Cheese, Hot peppers, Onions, Garlic");
     }
 }

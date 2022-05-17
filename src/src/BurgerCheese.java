@@ -3,7 +3,7 @@ public class BurgerCheese implements BaseFood {
 
     @Override
     public String toString() {
-        return String.format("HamBurger - Toppings: MeatType:");
+        return String.format("Beef, Lettuce, Tomato, Onion, Pickles, Mayo, Ketchup, Cheese");
     }
 
     @Override

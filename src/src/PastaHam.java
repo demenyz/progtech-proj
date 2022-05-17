@@ -13,4 +13,9 @@ public class PastaHam implements BaseFood {
     public boolean Ishot() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Pasta, Ham, Peas, Sauce";
+    }
 }

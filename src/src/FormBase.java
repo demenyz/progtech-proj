@@ -1,11 +1,10 @@
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class FormBase extends JDialog{
     //private static FormBase basePanel;
@@ -13,7 +12,7 @@ public class FormBase extends JDialog{
     private JPanel basePanel;
     private JTabbedPane panelSettings;
     private JButton buttonSave;
-    private JTabbedPane FoodType;
+    private JTabbedPane Basket;
     private JPanel Hamburger_field;
     private JRadioButton yesRadioButton;
     private JRadioButton noRadioButton;
@@ -52,6 +51,10 @@ public class FormBase extends JDialog{
     private JTextField Ham_ing_text;
     private JTextField Ham_cal_text;
     private JTextField Ham_hot_text;
+    private JTextArea basket_textbox;
+    private JTextField Total_Price_text;
+    private JButton undoLastItemOrderedButton;
+    private JButton clearAllButton;
 
     public FormBase(JFrame parent) {
 
@@ -62,6 +65,7 @@ public class FormBase extends JDialog{
         setModal(true);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        basket_textbox.append("Your Basket:");
 
         buttonOrder.addActionListener(new ActionListener() {
             @Override
@@ -71,21 +75,19 @@ public class FormBase extends JDialog{
         });
 
         //Yes and No radiobutton settings ---------------------------------------
-        ButtonGroup Hamburger = new ButtonGroup();
-        Hamburger.add(Ham_bacon_radio);
-        Hamburger.add(Ham_cheese_radio);
-        Hamburger.add(Ham_jalapeno_radio);
-        Hamburger.add(Ham_retro_radio);
-        ButtonGroup Pizza = new ButtonGroup();
-        Pizza.add(Pizza_bolognese_radio);
-        Pizza.add(Pizza_margherita_radio);
-        Pizza.add(Pizza_threecheese_radio);
-        Pizza.add(Pizza_ungarische_radio);
-        ButtonGroup Pasta = new ButtonGroup();
-        Pasta.add(Pasta_bolognese_radio);
-        Pasta.add(Pasta_carbonara_radio);
-        Pasta.add(Pasta_cheese_radio);
-        Pasta.add(Pasta_ham_radio);
+        ButtonGroup FoodButtons = new ButtonGroup();
+        FoodButtons.add(Ham_bacon_radio);
+        FoodButtons.add(Ham_cheese_radio);
+        FoodButtons.add(Ham_jalapeno_radio);
+        FoodButtons.add(Ham_retro_radio);
+        FoodButtons.add(Pizza_bolognese_radio);
+        FoodButtons.add(Pizza_margherita_radio);
+        FoodButtons.add(Pizza_threecheese_radio);
+        FoodButtons.add(Pizza_ungarische_radio);
+        FoodButtons.add(Pasta_bolognese_radio);
+        FoodButtons.add(Pasta_carbonara_radio);
+        FoodButtons.add(Pasta_cheese_radio);
+        FoodButtons.add(Pasta_ham_radio);
         //------------------------------------------------------------------------
         //                  Hamburger Radio_Buttons
         //------------------------------------------------------------------------
@@ -94,9 +96,9 @@ public class FormBase extends JDialog{
             public void actionPerformed(ActionEvent e) {
             AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
             BaseFood hamburger = (BaseFood) hamburger_factory.create("CHEESE");
-            Ham_price_text.setText( String.valueOf(hamburger.Price()));
-            Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-            Ham_ing_text.setText("ezt még meg kell csinálni");
+            Ham_price_text.setText( String.valueOf(hamburger.Price()) + " HUF");
+            Ham_cal_text.setText(String.valueOf(hamburger.Calories())+ " cal");
+            Ham_ing_text.setText(hamburger.toString());
             Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
             }
         });
@@ -105,33 +107,31 @@ public class FormBase extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
                 BaseFood hamburger = (BaseFood) hamburger_factory.create("JALAPENO");
-                Ham_price_text.setText( String.valueOf(hamburger.Price()));
-                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Ham_ing_text.setText("ezt még meg kell csinálni");
+                Ham_price_text.setText( String.valueOf(hamburger.Price()) + " HUF");
+                Ham_cal_text.setText(String.valueOf(hamburger.Calories())+ " cal");
+                Ham_ing_text.setText(hamburger.toString());
                 Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
             }
         });
-
         Ham_retro_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
                 BaseFood hamburger = (BaseFood) hamburger_factory.create("RETRO");
-                Ham_price_text.setText( String.valueOf(hamburger.Price()));
-                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Ham_ing_text.setText("ezt még meg kell csinálni");
+                Ham_price_text.setText( String.valueOf(hamburger.Price())+ " HUF");
+                Ham_cal_text.setText(String.valueOf(hamburger.Calories())+ " cal");
+                Ham_ing_text.setText(hamburger.toString());
                 Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
             }
         });
-
         Ham_bacon_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
                 BaseFood hamburger = (BaseFood) hamburger_factory.create("BACON");
-                Ham_price_text.setText( String.valueOf(hamburger.Price()));
-                Ham_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Ham_ing_text.setText("ezt még meg kell csinálni");
+                Ham_price_text.setText( String.valueOf(hamburger.Price())+ " HUF");
+                Ham_cal_text.setText(String.valueOf(hamburger.Calories())+ " cal");
+                Ham_ing_text.setText(hamburger.toString());
                 Ham_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
             }
         });
@@ -143,9 +143,9 @@ public class FormBase extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 BaseFood pizza = new PizzaBolognese((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_price_text.setText( String.valueOf(pizza.Price())+ " HUF");
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories())+ " cal");
+                Pizz_ing_text.setText(pizza.toString());
                 Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
             }
         });
@@ -153,9 +153,9 @@ public class FormBase extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 BaseFood pizza = new PizzaMargherita((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_price_text.setText( String.valueOf(pizza.Price())+ " HUF");
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories())+ " cal");
+                Pizz_ing_text.setText(pizza.toString());
                 Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
             }
         });
@@ -163,9 +163,9 @@ public class FormBase extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_price_text.setText( String.valueOf(pizza.Price())+ " HUF");
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories())+ " cal");
+                Pizz_ing_text.setText(pizza.toString());
                 Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
             }
         });
@@ -173,9 +173,9 @@ public class FormBase extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 BaseFood pizza = new PizzaUngarische((BaseFood) new Pizza());
-                Pizz_price_text.setText( String.valueOf(pizza.Price()));
-                Pizz_cal_text.setText(String.valueOf(pizza.Calories()));
-                Pizz_ing_text.setText("ezt még meg kell csinálni");
+                Pizz_price_text.setText( String.valueOf(pizza.Price())+ " HUF");
+                Pizz_cal_text.setText(String.valueOf(pizza.Calories())+ " cal");
+                Pizz_ing_text.setText(pizza.toString());
                 Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
             }
         });
@@ -184,49 +184,48 @@ public class FormBase extends JDialog{
         //                  Pasta Radio_Buttons
         //------------------------------------------------------------------------
 
-
         Pasta_ham_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("HAM");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+                BaseFood pasta = (BaseFood) pasta_factory.create("HAM");
+                Pas_price_text.setText( String.valueOf(pasta.Price())+ " HUF");
+                Pas_cal_text.setText(String.valueOf(pasta.Calories())+ " cal");
+                Pas_ing_text.setText(pasta.toString());
+                Pas_hot_text.setText(String.valueOf((pasta.Ishot()) ? "Yes" : "No" ));
             }
         });
         Pasta_carbonara_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("CARBONARA");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+                BaseFood pasta = (BaseFood) pasta_factory.create("CARBONARA");
+                Pas_price_text.setText( String.valueOf(pasta.Price())+ " HUF");
+                Pas_cal_text.setText(String.valueOf(pasta.Calories())+ " cal");
+                Pas_ing_text.setText(pasta.toString());
+                Pas_hot_text.setText(String.valueOf((pasta.Ishot()) ? "Yes" : "No" ));
             }
         });
         Pasta_cheese_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("CHEESE");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+                BaseFood pasta = (BaseFood) pasta_factory.create("CHEESE");
+                Pas_price_text.setText( String.valueOf(pasta.Price())+ " HUF");
+                Pas_cal_text.setText(String.valueOf(pasta.Calories())+ " cal");
+                Pas_ing_text.setText(pasta.toString());
+                Pas_hot_text.setText(String.valueOf((pasta.Ishot()) ? "Yes" : "No" ));
             }
         });
         Pasta_bolognese_radio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-                BaseFood hamburger = (BaseFood) pasta_factory.create("BOLOGNESE");
-                Pas_price_text.setText( String.valueOf(hamburger.Price()));
-                Pas_cal_text.setText(String.valueOf(hamburger.Calories()));
-                Pas_ing_text.setText("ezt még meg kell csinálni");
-                Pas_hot_text.setText(String.valueOf((hamburger.Ishot()) ? "Yes" : "No" ));
+                BaseFood pasta = (BaseFood) pasta_factory.create("BOLOGNESE");
+                Pas_price_text.setText( String.valueOf(pasta.Price())+ " HUF");
+                Pas_cal_text.setText(String.valueOf(pasta.Calories())+ " cal");
+                Pas_ing_text.setText(pasta.toString());
+                Pas_hot_text.setText(String.valueOf((pasta.Ishot()) ? "Yes" : "No" ));
             }
         });
 
@@ -234,12 +233,75 @@ public class FormBase extends JDialog{
         //                         End_Food_Buttons
         //------------------------------------------------------------------------
 
+        //------------------------------------------------------------------------
+        //                         Get_button_text
+        //------------------------------------------------------------------------
+
 
         buttonOrder.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
-                System.out.println(pizza.toString());
+                String order = Container.getSelectedButtonText(FoodButtons);
+                if (order =="Jalapeno" ||order =="Cheese" || order =="Retro" || order == "Bacon")
+                {
+                    basket_textbox.append("\n"+order + " Hamburger " + Ham_price_text.getText());
+                    Container.prices.add(Integer.valueOf(Ham_price_text.getText().substring(0,4)));
+                    Total_Price_text.setText(String.valueOf(sum_prices((ArrayList<Integer>) Container.prices))+ " HUF");
+                }
+                else if (order =="Bolognese" ||order =="Margherita" || order =="Threecheese" || order == "Ungarische")
+                {
+                    basket_textbox.append("\n"+order + " Pizza " + Pizz_price_text.getText());
+                    Container.prices.add(Integer.valueOf(Pizz_price_text.getText().substring(0,4)));
+                    Total_Price_text.setText(String.valueOf(sum_prices((ArrayList<Integer>) Container.prices))+ " HUF");
+
+                }
+                else if (order =="Milanese" ||order =="Cheese" || order =="Carbonara" || order == "Ham"){
+                    basket_textbox.append("\n"+order + " Pasta " + Pas_price_text.getText());
+                    Container.prices.add(Integer.valueOf(Pas_price_text.getText().substring(0,4)));
+                    Total_Price_text.setText(String.valueOf(sum_prices((ArrayList<Integer>) Container.prices))+ " HUF");
+                }
+                else {
+                    System.out.println("Pick any food in the list");
+                }
+
+            }
+        });
+
+        undoLastItemOrderedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String content = null;
+                try {
+                    content = basket_textbox.getDocument().getText(0, basket_textbox.getDocument().getLength());
+                } catch (BadLocationException ex) {
+                    System.out.println("You can't remove more lines");
+                }
+                int lastLineBreak = content.lastIndexOf('\n');
+                try {
+                    basket_textbox.getDocument().remove(lastLineBreak, basket_textbox.getDocument().getLength() - lastLineBreak);
+                } catch (BadLocationException ex) {
+                    System.out.println("You can't remove more lines");
+                }
+                if (Container.prices.size() == 0)
+                {
+                    System.out.println("You can't remove more price");
+                }
+                else{
+                    Container.total_price = Integer.valueOf(Total_Price_text.getText().substring(0,4));
+                    Container.prices.remove(Container.prices.size()-1);
+                    Total_Price_text.setText(String.valueOf(sum_prices((ArrayList<Integer>) Container.prices)) + " HUF");
+                }
+
+            }
+        });
+
+        clearAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            basket_textbox.setText(null);
+            basket_textbox.append("Your Basket:");
+            Container.prices.clear();
+            Total_Price_text.setText("0 HUF");
             }
         });
 
@@ -254,12 +316,20 @@ public class FormBase extends JDialog{
         setVisible(true);
 
 
+
     }
 
     // METHODS ---------------------------------
-
     public User u;
-
+    // PRICES LIST SUM
+    public int sum_prices(ArrayList<Integer> list)
+    {
+        int amount=0;
+        for (int i = 0; i < list.size() ; i++) {
+            amount+= list.get(i);
+        }
+        return amount;
+    }
 
     public void addUserAddress() {
 

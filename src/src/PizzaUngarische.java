@@ -5,12 +5,12 @@ public class PizzaUngarische extends FoodDecorator {
 
     @Override
     public int Price() {
-        return super.Price() + 700;
+        return super.Price() + 1400;
     }
 
     @Override
     public int Calories() {
-        return super.Calories() + 300;
+        return super.Calories() + 800;
     }
 
     @Override
@@ -19,8 +19,6 @@ public class PizzaUngarische extends FoodDecorator {
     }
     @Override
     public String toString() {
-        return String.format("%s; Ungarische Toppings: hot sausage, cheese, salami, pepperoni, hot peppers  Calories: %i; Price: %i; Hot: %b;",
-                super.toString(), Calories(), Price(), Ishot()
-        );
+        return String.format("Hot sausage, Cheese, Salami, Pepperoni, Hot peppers");
     }
 }

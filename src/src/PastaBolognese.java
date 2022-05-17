@@ -1,16 +1,21 @@
 public class PastaBolognese implements BaseFood {
     @Override
     public int Price() {
-        return 1000;
+        return 1500;
     }
 
     @Override
     public int Calories() {
-        return 500;
+        return 800;
     }
 
     @Override
     public boolean Ishot() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Pasta, Bolognese sauce, Minced meat, Cheese";
     }
 }

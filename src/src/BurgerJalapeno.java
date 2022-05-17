@@ -1,12 +1,12 @@
 public class BurgerJalapeno implements BaseFood {
     @Override
     public int Price() {
-        return 1000;
+        return 1200;
     }
 
     @Override
     public int Calories() {
-        return 500;
+        return 600;
     }
 
     @Override
@@ -15,8 +15,6 @@ public class BurgerJalapeno implements BaseFood {
     }
     @Override
     public String toString() {
-        return String.format("%s; Jalapeno Toppings: bolognese, cheese, hot peppers Calories: %i; Price: %i; Hot: %b;",
-                super.toString(), Calories(), Price(), Ishot()
-        );
+        return String.format("Beef, Bacon, Pickled jalapenos, Crispy fried onions, BBQ sauce ");
     }
 }
