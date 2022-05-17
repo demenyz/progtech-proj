@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
+import java.sql.*;
+import java.time.LocalDateTime;
 
 public class FormBase extends JDialog{
     //private static FormBase basePanel;
@@ -14,12 +16,6 @@ public class FormBase extends JDialog{
     private JButton buttonSave;
     private JTabbedPane Basket;
     private JPanel Hamburger_field;
-    private JRadioButton yesRadioButton;
-    private JRadioButton noRadioButton;
-    private JRadioButton margheritaRadioButton;
-    private JRadioButton threeCheeseRadioButton;
-    private JRadioButton ungarischeRadioButton;
-    private JRadioButton bologneseRadioButton;
     private JTextField PizzaField;
     private JTabbedPane panelAddress;
     private JTextField fieldCity;
@@ -47,7 +43,6 @@ public class FormBase extends JDialog{
     private JRadioButton Pasta_carbonara_radio;
     private JRadioButton Pasta_cheese_radio;
     private JRadioButton Pasta_bolognese_radio;
-    private JLabel cal;
     private JTextField Ham_ing_text;
     private JTextField Ham_cal_text;
     private JTextField Ham_hot_text;
@@ -55,6 +50,8 @@ public class FormBase extends JDialog{
     private JTextField Total_Price_text;
     private JButton undoLastItemOrderedButton;
     private JButton clearAllButton;
+    private JLabel cal;
+    private JButton searchAddButton;
 
     public FormBase(JFrame parent) {
 
@@ -66,13 +63,6 @@ public class FormBase extends JDialog{
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         basket_textbox.append("Your Basket:");
-
-        buttonOrder.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
 
         //Yes and No radiobutton settings ---------------------------------------
         ButtonGroup FoodButtons = new ButtonGroup();
@@ -91,9 +81,7 @@ public class FormBase extends JDialog{
         //------------------------------------------------------------------------
         //                  Hamburger Radio_Buttons
         //------------------------------------------------------------------------
-        Ham_cheese_radio.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        Ham_cheese_radio.addActionListener(e -> {
             AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
             BaseFood hamburger = (BaseFood) hamburger_factory.create("CHEESE");
             Ham_price_text.setText( String.valueOf(hamburger.Price()) + " HUF");
@@ -178,7 +166,6 @@ public class FormBase extends JDialog{
                 Pizz_ing_text.setText(pizza.toString());
                 Pizz_hot_text.setText(String.valueOf((pizza.Ishot()) ? "Yes" : "No" ));
             }
-        });
 
         //------------------------------------------------------------------------
         //                  Pasta Radio_Buttons
@@ -227,7 +214,7 @@ public class FormBase extends JDialog{
                 Pas_ing_text.setText(pasta.toString());
                 Pas_hot_text.setText(String.valueOf((pasta.Ishot()) ? "Yes" : "No" ));
             }
-        });
+
 
         //------------------------------------------------------------------------
         //                         End_Food_Buttons
@@ -303,15 +290,28 @@ public class FormBase extends JDialog{
             Container.prices.clear();
             Total_Price_text.setText("0 HUF");
             }
+        buttonOrder.addActionListener(e -> {
+            BaseFood pizza = new PizzaThreeCheese((BaseFood) new Pizza());
         });
 
-        buttonSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        buttonSave.addActionListener(e -> {
+            if (userHasAddress()){
+                JOptionPane.showMessageDialog(parent, "You already have an address registered on your account!", "Error!", JOptionPane.ERROR_MESSAGE);
+                checkUserAddress();
+            }
+            else{
                 addUserAddress();
             }
         });
 
+        searchAddButton.addActionListener(e -> {
+            if (userHasAddress()){
+                checkUserAddress();
+            }
+            else{
+                JOptionPane.showMessageDialog(parent, "No addresses found on your account!\nPlease add a new address using the form!", "Error!", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         setVisible(true);
 
@@ -330,7 +330,13 @@ public class FormBase extends JDialog{
         }
         return amount;
     }
+    }
 
+    // METHODS ---------------------------------
+
+    public static String userId = FormLogin.getUserId();
+
+    public Address add;
     public void addUserAddress() {
 
         try{
@@ -347,8 +353,7 @@ public class FormBase extends JDialog{
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-
-            preparedStatement.setInt(1, 20);
+            preparedStatement.setInt(1, Integer.parseInt(userId));
             preparedStatement.setString(2, this.fieldCity.getText());
             preparedStatement.setString(3, this.fieldStreet.getText());
             preparedStatement.setString(4, this.fieldNum.getText());
@@ -365,12 +370,126 @@ public class FormBase extends JDialog{
         }
 
     }
+    public void checkUserAddress() {
+
+        add = null;
+
+        final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
+        final String USERNAME = "root";
+        final String PASSWORD = "";
+
+        try{
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT user_id,city,street,number,apartment FROM user_address INNER JOIN users ON user_address.user_id=users.id WHERE user_address.user_id=?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, userId);
+
+            // Get the information of the currently logged-in user's address ... ----------------------
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (rs.next()){
+                add = new Address();
+                add.user_id = rs.getInt("user_id");
+                add.city = rs.getString("city");
+                add.street = rs.getString("street");
+                add.number = rs.getString("number");
+                add.apartment = rs.getString("apartment");
+
+            }
+
+
+            fieldCity.setText(add.city);
+            this.fieldStreet.setText(add.street);
+            this.fieldNum.setText(add.number);
+            this.fieldApartment.setText(add.apartment);
+            System.out.println("|| LOG: User's address with the ID of '"+userId +"':\nCity: "+ add.city +"\nStreet: "+ add.street +" "+ add.number +"\nApartment: "+add.apartment);
+
+            stmt.close();
+            conn.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        //return add; // Return the address of the user with the given ID ...
+    }
+    public boolean userHasAddress(){
+        final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
+        final String USERNAME = "root";
+        final String PASSWORD = "";
+
+        try{
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT user_id FROM user_address INNER JOIN users ON user_address.user_id=users.id WHERE user_address.user_id=?";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, userId);
+
+            // Get the information of the currently logged-in user's address ... ----------------------
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if (!rs.isBeforeFirst() ) {
+                System.out.println("|| LOG: Address of the user does not exist. Please save one.");
+                return false;
+            }
+
+
+            stmt.close();
+            conn.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+    public void addOrderLog(){
+        try{
+            final String DB_URL = "jdbc:mysql://localhost:3306/foodies?useSSL=false&serverTimezone=UTC";
+            final String USERNAME = "root";
+            final String PASSWORD = "";
+
+            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+
+            // If connection is successful ... -------------------------
+            Statement stmt = conn.createStatement();
+
+            String sql = "INSERT INTO orders (order_date, order_price, order_qty, order_txt) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+            preparedStatement.setString(1, String.valueOf(LocalDateTime.now()));
+            preparedStatement.setString(2, "");
+            preparedStatement.setInt(3, 10);
+            preparedStatement.setString(4, "");
+
+
+            preparedStatement.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     //public static FormBase base;
     public static void main(String[] args){
 
-        FormBase base = new FormBase(null);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        FormBase base = new FormBase(null);
     }
 
 }

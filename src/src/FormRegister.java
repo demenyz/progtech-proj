@@ -76,7 +76,7 @@ public class FormRegister extends JDialog{
     }
 
     public User user;
-    private User addUser(String first_name, String last_name, String email, String phone, String password) { // Add the new user to the Db ...
+    private User addUser(String first_name, String last_name, String email, String phone_number, String password) { // Add the new user to the Db ...
         User u = null;
 
         // Connection to Db -----------------------
@@ -90,13 +90,13 @@ public class FormRegister extends JDialog{
             // If connection is successful ... -------------------------
             Statement stmt = conn.createStatement();
 
-            String sql = "INSERT INTO users (first_name, last_name, email, phone, password) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO users (first_name, last_name, email, phone_number, password) VALUES (?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, first_name);
             preparedStatement.setString(2, last_name);
             preparedStatement.setString(3, email);
-            preparedStatement.setString(4, phone);
+            preparedStatement.setString(4, phone_number);
             preparedStatement.setString(5, password);
 
             int addedRows = preparedStatement.executeUpdate();
@@ -105,7 +105,7 @@ public class FormRegister extends JDialog{
                 u.first_name = first_name;
                 u.last_name = last_name;
                 u.email = email;
-                u.phone = phone;
+                u.phone = phone_number;
                 u.password = password;
             }
 
@@ -123,15 +123,22 @@ public class FormRegister extends JDialog{
 
     // MAIN -----------------------------
     public static void main(String[] args){
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         FormRegister reg = new FormRegister(null);
         User user = reg.user;
 
         if (user != null){
-            System.out.println("Successful registration with the E-mail of: " + user.email);
+            System.out.println("|| LOG: Successful registration with the E-mail of: " + user.email);
             FormLogin.main(null);
         }
         else{
-            System.out.println("An error occurred during registration!");
+            System.out.println("|| LOG: An error occurred during registration!");
         }
     }
 }
