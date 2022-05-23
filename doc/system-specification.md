@@ -150,7 +150,7 @@ They can review all the orders at the database .
  - Order Quantity
  - Order text
 
-![Database plan](https://imgur.com/lPAdiCI)
+![prog_database_plan](https://user-images.githubusercontent.com/91090804/169783615-9ef571e6-1f59-4958-807b-16b209d4602c.png)
 
 ## Standards and Laws
 #### General Standards
