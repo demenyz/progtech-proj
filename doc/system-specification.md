@@ -1,7 +1,23 @@
-## About this document
+﻿## About this document
 We are accepted a commission of creating a fully functional food ordering application.  This document will describe the project under development.
 ## Project overview
-
+This document contains various technologies and softwares that are going to be used during development. The Business Requirements, Goals and objectives of the project will be the resources we will use. The documents we need to use during development:
+    
+-   the features requested by the clients
+    
+-   the database structure and plan
+    
+-   the laws and industry standards that this project is subjected
+    
+-   regulations
+    
+-   terms and conditions
+    
+-   logging
+    
+-   privacy policies like: advertising policies and third party privacy policies
+    
+-   CCPA and GDPR data protection rights
 
 ## Technologies used
 #### Environment – IntelliJ IDEA
@@ -61,12 +77,12 @@ The database structure will be written accordig to the MySQL standards. Recommen
 - Demény Zoltán
 
 #### Task workflow
-We use Trello for create new tasks, where anyone can add a new task with labels to easily find it between the other tasks, we can comment them, give short description and add lists if its needed. We can modify our tasks anytime if we want, for example add new comment, add new list item or marked it as finished.
+We use Trello to create new tasks, where anyone can add a new task with labels to easily find it between the other tasks, we can comment to them, give short description and add lists if it is needed. We can modify our tasks anytime we want, for example add new comment, add new list item or mark it as finished.
 
-For make it more simple and easier we can create cards with the names of:
+To make it more simple and easier we created cards with the names of:
 
-- Backlog[not commited] 
-- Backlog[commited] 
+- Backlog [not commited] 
+- Backlog [commited] 
 - In Progress 
 - Done 
 - Testing 
@@ -99,6 +115,42 @@ For make it more simple and easier we can create cards with the names of:
 
 They can review all the orders at the database .
 ## Database model
+#### Tables of the database
+**Users:**
+
+ - ID: Unique ID of the user
+ - E-mail: E-mail of the user
+ - Password: Password of the user
+ - First name: First name of the user
+ - Last name: Last name of the user
+ - Phone number: Mobile phone number of the user
+ 
+ **user_address:** The saved address for the user
+ 
+ - User ID: Connection field with the 'users' table
+ - City
+ - Street
+ - Number
+ - Apartment
+
+**user_log:** Whenever a user logs in, it inserts some information about it
+
+ - ID
+ - E-mail
+ - Login date
+ - IP address
+ - Status: Successful or failed
+
+**Orders:**
+
+ - Order ID
+ - User ID
+ - Order date
+ - Order price
+ - Order Quantity
+ - Order text
+
+![Database plan](https://imgur.com/lPAdiCI)
 
 ## Standards and Laws
 #### General Standards
