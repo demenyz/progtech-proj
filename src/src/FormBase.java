@@ -93,36 +93,16 @@ public class FormBase extends JDialog{
         //                  Hamburger Radio_Buttons
         //------------------------------------------------------------------------
         Ham_cheese_radio.addActionListener(e -> {
-            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-            BaseFood hamburger = (BaseFood) hamburger_factory.create("CHEESE");
-            Ham_price_text.setText(hamburger.Price() + " HUF");
-            Ham_cal_text.setText(hamburger.Calories() + " cal");
-            Ham_ing_text.setText(hamburger.toString());
-            Ham_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
+            CreateInstanceB("CHEESE", true);
         });
         Ham_jalapeno_radio.addActionListener(e -> {
-            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-            BaseFood hamburger = (BaseFood) hamburger_factory.create("JALAPENO");
-            Ham_price_text.setText(hamburger.Price() + " HUF");
-            Ham_cal_text.setText(hamburger.Calories() + " cal");
-            Ham_ing_text.setText(hamburger.toString());
-            Ham_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
+            CreateInstanceB("JALAPENO", true);
         });
         Ham_retro_radio.addActionListener(e -> {
-            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-            BaseFood hamburger = (BaseFood) hamburger_factory.create("RETRO");
-            Ham_price_text.setText(hamburger.Price() + " HUF");
-            Ham_cal_text.setText(hamburger.Calories() + " cal");
-            Ham_ing_text.setText(hamburger.toString());
-            Ham_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
+            CreateInstanceB("RETRO", true);
         });
         Ham_bacon_radio.addActionListener(e -> {
-            AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-            BaseFood hamburger = (BaseFood) hamburger_factory.create("BACON");
-            Ham_price_text.setText(hamburger.Price() + " HUF");
-            Ham_cal_text.setText(hamburger.Calories() + " cal");
-            Ham_ing_text.setText(hamburger.toString());
-            Ham_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
+            CreateInstanceB("BACON", true);
         });
         //------------------------------------------------------------------------
         //                  Pizza Radio_Buttons
@@ -130,31 +110,20 @@ public class FormBase extends JDialog{
 
         Pizza_bolognese_radio.addActionListener(e -> {
             BaseFood pizza = new PizzaBolognese(new Pizza());
-            Pizz_price_text.setText(pizza.Price() + " HUF");
-            Pizz_cal_text.setText(pizza.Calories() + " cal");
-            Pizz_ing_text.setText(pizza.toString());
-            Pizz_hot_text.setText((pizza.Ishot()) ? "Yes" : "No");
+            SetValues(pizza);
+
         });
         Pizza_margherita_radio.addActionListener(e -> {
             BaseFood pizza = new PizzaMargherita(new Pizza());
-            Pizz_price_text.setText(pizza.Price() + " HUF");
-            Pizz_cal_text.setText(pizza.Calories() + " cal");
-            Pizz_ing_text.setText(pizza.toString());
-            Pizz_hot_text.setText((pizza.Ishot()) ? "Yes" : "No");
+            SetValues(pizza);
         });
         Pizza_threecheese_radio.addActionListener(e -> {
             BaseFood pizza = new PizzaThreeCheese(new Pizza());
-            Pizz_price_text.setText(pizza.Price() + " HUF");
-            Pizz_cal_text.setText(pizza.Calories() + " cal");
-            Pizz_ing_text.setText(pizza.toString());
-            Pizz_hot_text.setText((pizza.Ishot()) ? "Yes" : "No");
+            SetValues(pizza);
         });
         Pizza_ungarische_radio.addActionListener(e -> {
             BaseFood pizza = new PizzaUngarische(new Pizza());
-            Pizz_price_text.setText(pizza.Price() + " HUF");
-            Pizz_cal_text.setText(pizza.Calories() + " cal");
-            Pizz_ing_text.setText(pizza.toString());
-            Pizz_hot_text.setText((pizza.Ishot()) ? "Yes" : "No");
+            SetValues(pizza);
         });
 
         //------------------------------------------------------------------------
@@ -162,36 +131,16 @@ public class FormBase extends JDialog{
         //------------------------------------------------------------------------
 
         Pasta_ham_radio.addActionListener(e -> {
-            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-            BaseFood pasta = (BaseFood) pasta_factory.create("HAM");
-            Pas_price_text.setText(pasta.Price() + " HUF");
-            Pas_cal_text.setText(pasta.Calories() + " cal");
-            Pas_ing_text.setText(pasta.toString());
-            Pas_hot_text.setText((pasta.Ishot()) ? "Yes" : "No");
+            CreateInstance("HAM", false);
         });
         Pasta_carbonara_radio.addActionListener(e -> {
-            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-            BaseFood pasta = (BaseFood) pasta_factory.create("CARBONARA");
-            Pas_price_text.setText(pasta.Price() + " HUF");
-            Pas_cal_text.setText(pasta.Calories() + " cal");
-            Pas_ing_text.setText(pasta.toString());
-            Pas_hot_text.setText((pasta.Ishot()) ? "Yes" : "No");
+            CreateInstance("CARBONARA", false);
         });
         Pasta_cheese_radio.addActionListener(e -> {
-            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-            BaseFood pasta = (BaseFood) pasta_factory.create("CHEESE");
-            Pas_price_text.setText(pasta.Price() + " HUF");
-            Pas_cal_text.setText(pasta.Calories() + " cal");
-            Pas_ing_text.setText(pasta.toString());
-            Pas_hot_text.setText((pasta.Ishot()) ? "Yes" : "No");
+            CreateInstance("CHEESE", false);
         });
         Pasta_bolognese_radio.addActionListener(e -> {
-            AbstractFactory pasta_factory = FactoryProducer.getFactory(false);
-            BaseFood pasta = (BaseFood) pasta_factory.create("BOLOGNESE");
-            Pas_price_text.setText(pasta.Price() + " HUF");
-            Pas_cal_text.setText(pasta.Calories() + " cal");
-            Pas_ing_text.setText(pasta.toString());
-            Pas_hot_text.setText((pasta.Ishot()) ? "Yes" : "No");
+            CreateInstance("BOLOGNESE", false);
         });
 
 
@@ -268,7 +217,7 @@ public class FormBase extends JDialog{
             if (userHasAddress()){
                 JOptionPane.showMessageDialog(parent, "You already have an address registered on your account!", "Error!", JOptionPane.ERROR_MESSAGE);
                 checkUserAddress();
-                //Logger.info("Address got for user: " + userId);
+                Logger.info("Address got for user: " + userId);
             }
             else{
                 addUserAddress();
@@ -300,6 +249,32 @@ public class FormBase extends JDialog{
 
 
     //region Important methods ...
+
+    public void SetValues(BaseFood pizza)
+    {
+        Pizz_price_text.setText(pizza.Price() + " HUF");
+        Pizz_cal_text.setText(pizza.Calories() + " cal");
+        Pizz_ing_text.setText(pizza.toString());
+        Pizz_hot_text.setText((pizza.Ishot()) ? "Yes" : "No");
+    }
+    public void CreateInstance(String instance, Boolean which)
+    {
+        AbstractFactory pasta_factory = FactoryProducer.getFactory(which);
+        BaseFood pasta = (BaseFood) pasta_factory.create(instance);
+        Pas_price_text.setText(pasta.Price() + " HUF");
+        Pas_cal_text.setText(pasta.Calories() + " cal");
+        Pas_ing_text.setText(pasta.toString());
+        Pas_hot_text.setText((pasta.Ishot()) ? "Yes" : "No");
+    }
+    public void CreateInstanceB(String instance, Boolean which)
+    {
+        AbstractFactory hamburger_factory = FactoryProducer.getFactory(which);
+        BaseFood hamburger = (BaseFood) hamburger_factory.create(instance);
+        Ham_price_text.setText(hamburger.Price() + " HUF");
+        Ham_cal_text.setText(hamburger.Calories() + " cal");
+        Ham_ing_text.setText(hamburger.toString());
+        Ham_hot_text.setText((hamburger.Ishot()) ? "Yes" : "No");
+    }
 
     public void clearBasket(){
         basket_textbox.setText(null);
