@@ -11,17 +11,6 @@ public class Container{
     public static List<String> foodies = new ArrayList<String>();
 
 
-    // It was a try but not worked
-    /*public static BaseFood getburgertype(String burgername)
-    {
-        AbstractFactory hamburger_factory = FactoryProducer.getFactory(true);
-        burgername = burgername.toUpperCase();
-        System.out.println(burgername);
-        BaseFood hamburger = (BaseFood) hamburger_factory.create(burgername);
-
-        return hamburger;
-    }
-    */
     public static String getSelectedButtonText(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();

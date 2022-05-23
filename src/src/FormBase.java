@@ -1,11 +1,12 @@
+import org.tinylog.Logger;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
-import org.tinylog.Logger;
 
 public class FormBase extends JDialog{
     //region Panels, buttons, etc...
@@ -109,7 +110,7 @@ public class FormBase extends JDialog{
         //------------------------------------------------------------------------
 
         Pizza_bolognese_radio.addActionListener(e -> {
-            BaseFood pizza = new PizzaBolognese(new Pizza());
+            BaseFood pizza = new  PizzaBolognese(new Pizza());
             SetValues(pizza);
 
         });
@@ -284,7 +285,7 @@ public class FormBase extends JDialog{
         Total_Price_text.setText("0 HUF");
     }
 
-    public int sumOfPrices(ArrayList<Integer> list) {
+    public static int sumOfPrices(ArrayList<Integer> list) {
         int amount = 0;
         for (Integer integer : list) {
             amount += integer;
